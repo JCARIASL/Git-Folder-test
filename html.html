@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial: Entorno Python en VS Code</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .menu-btn {
+            padding: 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-python { background: #3776ab; color: white; }
+        .btn-vscode { background: #007acc; color: white; }
+        .btn-jupyter { background: #f37626; color: white; }
+        .btn-git { background: #f05032; color: white; }
+        .btn-live { background: #563d7c; color: white; }
+        .btn-extra { background: #28a745; color: white; }
+        .btn-all { background: #6c757d; color: white; }
+        .btn-exit { background: #dc3545; color: white; }
+
+        .content {
+            padding: 30px;
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: #1e3c72;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 5px solid #667eea;
+        }
+
+        .step h3 {
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+
+        .step ol {
+            margin-left: 20px;
+        }
+
+        .step li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1em;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐍 Tutorial: Entorno Python</h1>
+            <p>Instalación paso a paso de VS Code + Jupyter + Git + Live Server</p>
+        </header>
+
+        <!-- MENÚ PRINCIPAL -->
+        <div id="menu" class="menu">
+            <button class="menu-btn btn-python" onclick="showSection('python')">
+                <span class="emoji">🐍</span> Instalar Python
+            </button>
+            <button class="menu-btn btn-vscode" onclick="showSection('vscode')">
+                <span class="emoji">💻</span> VS Code + Python
+            </button>
+            <button class="menu-btn btn-jupyter" onclick="showSection('jupyter')">
+                <span class="emoji">📓</span> Configurar Jupyter
+            </button>
+            <button class="menu-btn btn-git" onclick="showSection('git')">
+                <span class="emoji">🌿</span> Instalar Git
+            </button>
+            <button class="menu-btn btn-live" onclick="showSection('liveserver')">
+                <span class="emoji">🌐</span> Live Server
+            </button>
+            <button class="menu-btn btn-extra" onclick="showSection('extra')">
+                <span class="emoji">🧩</span> Extensiones Extra
+            </button>
+            <button class="menu-btn btn-all" onclick="showSection('all')">
+                <span class="emoji">📋</span> Ver Todo
+            </button>
+            <button class="menu-btn btn-exit" onclick="window.close()">
+                <span class="emoji"></span> Salir
+            </button>
+        </div>
+
+        <!-- SECCIÓN PYTHON -->
+        <div id="python" class="content">
+            <h2 class="section-title">🐍 Paso 1: Instalar Python</h2>
+            <div class="step">
+                <h3>Instrucciones:</h3>
+                <ol>
+                    <li>Ve a la página oficial: <strong>https://www.python.org/downloads/</strong></li>
+                    <li>Descarga la última versión estable (recomendado 3.11 o superior)</li>
+                    <li>Ejecuta el instalador descargado</li>
+                    <li><div class="warning">⚠️ <strong>MUY IMPORTANTE:</strong> Marca la casilla "Add Python to PATH" antes de instalar</div></li>
+                    <li>Selecciona "Install Now"</li>
+                    <li>Abre una terminal (CMD o PowerShell) y verifica:
+                        <div class="code">python --version<br>pip --version</div>
+                    </li>
+                </ol>
+            </div>
+            <button class="back-btn" onclick="showMenu()">← Volver al Menú</button>
+        </div>
+
+        <!-- SECCIÓN VS CODE -->
+        <div id="vscode" class="content">
+            <h2 class="section-title">💻 Paso 2: Instalar VS Code + Extensión Python</h2>
+            <div class="step">
+                <h3>Instrucciones:</h3>
+                <ol>
+                    <li>Descarga VS Code desde: <strong>https://code.visualstudio.com/</strong></li>
+                    <li>Durante la instalación marca:
+                        <ul style="margin: 10px 0;">
+                            <li>"Add to PATH"</li>
+                            <li>"Add 'Open with Code' a Windows Explorer"</li>
+                        </ul>
+                    </li>
+                    <li>Abre VS Code y ve al panel de Extensiones (<strong>Ctrl + Shift + X</strong>)</li>
+                    <li>Busca e instala: <strong>"Python"</strong> (de Microsoft)</li>
+                    <li>Abre la paleta de comandos (<strong>Ctrl + Shift + P</strong>) y ejecuta:
+                        <div class="code">Python: Select Interpreter</div>
+                    </li>
+                    <li>Elige la versión de Python que instalaste</li>
+                </ol>
+            </div>
+            <button class="back-btn" onclick="showMenu()">← Volver al Menú</button>
+        </div>
+
+        <!-- SECCIÓN JUPYTER -->
+        <div id="jupyter" class="content">
+            <h2 class="section-title">📓 Paso 3: Configurar Jupyter en VS Code</h2>
+            <div class="step">
+                <h3>Instrucciones:</h3>
+                <ol>
+                    <li>En VS Code, instala estas extensiones:
+                        <ul style="margin: 10px 0;">
+                            <li>Jupyter (Microsoft)</li>
+                            <li>Jupyter Keymap (opcional)</li>
+                            <li>Jupyter Notebook Renderers (Microsoft)</li>
+                        </ul>
+                    </li>
+                    <li>Abre la terminal integrada en VS Code (<strong>Ctrl + ñ</strong> o <strong>Ctrl + `</strong>)</li>
+                    <li>Instala los paquetes necesarios:
+                        <div class="code">pip install jupyter ipykernel</div>
+                    </li>
+                    <li>Crea un archivo nuevo con extensión <strong>.ipynb</strong> (ejemplo: notas.ipynb)</li>
+                    <li>VS Code lo abrirá como un notebook de Jupyter</li>
+                    <li>Arriba a la derecha, selecciona el kernel de Python</li>
+                    <li>¡Listo! Ya puedes crear celdas con código y ejecutarlas con <strong>Shift + Enter</strong></li>
+                </ol>
+            </div>
+            <button class="back-btn" onclick="showMenu()">← Volver al Menú</button>
+        </div>
+
+        <!-- SECCIÓN GIT -->
+        <div id="git" class="content">
+            <h2 class="section-title">🌿 Paso 4: Instalar y Configurar Git</h2>
+            <div class="step">
+                <h3>Instrucciones:</h3>
+                <ol>
+                    <li>Descarga Git desde: <strong>https://git-scm.com/downloads</strong></li>
+                    <li>Ejecuta el instalador (opciones por defecto están bien)</li>
+                    <li>Verifica la instalación en terminal:
+                        <div class="code">git --version</div>
+                    </li>
+                    <li>Configura tu identidad (una sola vez):
+                        <div class="code">git config --global user.name "Tu Nombre"<br>git config --global user.email "tu@email.com"</div>
+                    </li>
+                    <li>En VS Code instala la extensión <strong>"GitLens"</strong> (recomendada)</li>
+                    <li>Git se integra automáticamente en la barra lateral de VS Code (icono de ramificaciones)</li>
+                </ol>
+            </div>
+            <button class="back-btn" onclick="showMenu()">← Volver al Menú</button>
+        </div>
+
+        <!-- SECCIÓN LIVE SERVER -->
+        <div id="liveserver" class="content">
+            <h2 class="section-title">🌐 Paso 5: Extensión Live Server</h2>
+            <div class="step">
+                <h3>Instrucciones:</h3>
+                <ol>
+                    <li>En VS Code ve a Extensiones (<strong>Ctrl + Shift + X</strong>)</li>
+                    <li>Busca e instala: <strong>"Live Server"</strong> (autor: Ritwick Dey)</li>
+                    <li>Crea un archivo HTML en tu proyecto, por ejemplo: <code>index.html</code></li>
+                    <li>Haz clic derecho dentro del editor y selecciona: <strong>"Open with Live Server"</strong></li>
+                    <li>Se abrirá tu navegador en: <code>http://127.0.0.1:5500</code></li>
+                    <li>Cada vez que guardes el archivo (<strong>Ctrl + S</strong>), el navegador se recarga automáticamente 🎉</li>
+                    <li>Para detener el servidor, haz clic en el puerto (5500) en la barra inferior de VS Code</li>
+                </ol>
+            </div>
+            <button class="back-btn" onclick="showMenu()">← Volver al Menú</button>
+        </div>
+
+        <!-- SECCIÓN EXTENSIONES EXTRA -->
+        <div id="extra" class="content">
+            <h2 class="section-title">🧩 Extensiones Recomendadas Extra</h2>
+            <div class="step">
+                <h3>Para Python:</h3>
+                <ul style="margin-left: 20px; line-height: 2;">
+                    <li><strong>Pylance</strong> - Análisis inteligente de código</li>
+                    <li><strong>Black Formatter</strong> - Formato automático</li>
+                    <li><strong>autoDocstring</strong> - Genera documentación</li>
+                    <li><strong>Python Debugger</strong> - Depuración avanzada</li>
+                </ul>
+            </div>
+            <div class="step">
+                <h3>Para Productividad:</h3>
+                <ul style="margin-left: 20px; line-height: 2;">
+                    <li><strong>Material Icon Theme</strong> - Iconos bonitos</li>
+                    <li><strong>Prettier - Code formatter</strong> - Formateador universal</li>
+                    <li><strong>Path Intellisense</strong> - Autocompletado de rutas</li>
+                    <li><strong>Code Spell Checker</strong> - Corrector ortográfico</li>
+                </ul>
+            </div>
+            <button class="back-btn" onclick="showMenu()">← Volver al Menú</button>
+        </div>
+
+        <!-- SECCIÓN TODO -->
+        <div id="all" class="content">
+            <h2 class="section-title">📋 Tutorial Completo</h2>
+            <div class="step">
+                <h3>🐍 Paso 1: Instalar Python</h3>
+                <ol>
+                    <li>Ve a https://www.python.org/downloads/</li>
+                    <li>Descarga la última versión</li>
+                    <li>️ Marca "Add Python to PATH"</li>
+                    <li>Verifica: <code>python --version</code></li>
+                </ol>
+            </div>
+            <div class="step">
+                <h3>💻 Paso 2: VS Code</h3>
+                <ol>
+                    <li>Descarga desde code.visualstudio.com</li>
+                    <li>Instala extensión Python</li>
+                    <li>Selecciona el intérprete</li>
+                </ol>
+            </div>
+            <div class="step">
+                <h3>📓 Paso 3: Jupyter</h3>
+                <ol>
+                    <li>Instala extensión Jupyter</li>
+                    <li>Ejecuta: <code>pip install jupyter ipykernel</code></li>
+                    <li>Crea archivo .ipynb</li>
+                </ol>
+            </div>
+            <div class="step">
+                <h3>🌿 Paso 4: Git</h3>
+                <ol>
+                    <li>Descarga desde git-scm.com</li>
+                    <li>Configura: <code>git config --global user.name "Tu Nombre"</code></li>
+                </ol>
+            </div>
+            <div class="step">
+                <h3>🌐 Paso 5: Live Server</h3>
+                <ol>
+                    <li>Instala extensión Live Server</li>
+                    <li>Clic derecho → Open with Live Server</li>
+                </ol>
+            </div>
+            <button class="back-btn" onclick="showMenu()">← Volver al Menú</button>
+        </div>
+
+        <footer>
+            <p>🚀 ¡Éxitos codificando! | Tutorial creado en 2026</p>
+        </footer>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Ocultar menú
+            document.getElementById('menu').style.display = 'none';
+            
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.content');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar sección seleccionada
+            const selectedSection = document.getElementById(sectionId);
+            if (selectedSection) {
+                selectedSection.classList.add('active');
+            }
+            
+            // Scroll al inicio
+            window.scrollTo(0, 0);
+        }
+
+        function showMenu() {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.content');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Mostrar menú
+            document.getElementById('menu').style.display = 'grid';
+            
+            // Scroll al inicio
+            window.scrollTo(0, 0);
+        }
+
+        // Animación de entrada
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuButtons = document.querySelectorAll('.menu-btn');
+            menuButtons.forEach((btn, index) => {
+                btn.style.animationDelay = `${index * 0.1}s`;
+                btn.style.animation = 'fadeIn 0.5s ease forwards';
+                btn.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>
