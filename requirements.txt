@@ -1,0 +1,11 @@
+# Dependencias para tutorial Python
+# Este archivo lista las dependencias mencionadas en el tutorial
+# No es necesario instalarlas para ver el HTML
+
+# Jupyter Notebook
+jupyter>=1.0.0
+ipykernel>=6.0.0
+
+# Utilidades opcionales
+black>=23.0.0
+pylance>=2023.0.0
